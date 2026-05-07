@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -208,27 +209,63 @@ def submit_commuter_report(report: Dict) -> Dict:
 def get_dashboard_dataset() -> Dict:
     routes = get_route_lookup()
     vehicles = load_vehicles()["vehicles"]
-    logs = read_logs()
+    
+    # Load logs natively into a Pandas DataFrame
+    try:
+        df = pd.read_csv(LOGS_FILE)
+    except FileNotFoundError:
+        # Fallback empty dataframe matching the CSV columns from append_log
+        df = pd.DataFrame(columns=[
+            "timestamp", "vehicle_id", "route_id", "event_type", 
+            "occupancy_count", "occupancy_percent", "status", 
+            "wait_minutes", "barangay", "report_type", "confidence"
+        ])
 
     crowding_by_route = []
+    
+    if not df.empty:
+        # Ensure numerical types for aggregation
+        df['occupancy_percent'] = pd.to_numeric(df['occupancy_percent'], errors='coerce')
+        df['wait_minutes'] = pd.to_numeric(df['wait_minutes'], errors='coerce')
+        
+        # Vectorized groupby: Calculate averages in a single pass
+        agg_df = df.groupby('route_id').agg(
+            average_occupancy=('occupancy_percent', 'mean'),
+            average_wait=('wait_minutes', 'mean')
+        ).reset_index()
+        
+        for _, row in agg_df.iterrows():
+            route_id = row['route_id']
+            if route_id in routes:
+                avg_occ = row['average_occupancy']
+                avg_wait = row['average_wait']
+                
+                crowding_by_route.append({
+                    "route_id": route_id,
+                    "route_name": routes[route_id]["name"],
+                    # Clean up NaNs to 0.0 for JSON serialization
+                    "average_occupancy": round(avg_occ, 1) if pd.notna(avg_occ) else 0.0,
+                    "average_wait": round(avg_wait, 1) if pd.notna(avg_wait) else 0.0,
+                    "reliability": routes[route_id]["reliability"],
+                })
+
+    # Catch any routes that haven't generated telemetry logs yet
+    processed_route_ids = {r["route_id"] for r in crowding_by_route}
     for route_id, route in routes.items():
-        route_logs = [log for log in logs if log["route_id"] == route_id and log["occupancy_percent"]]
-        occupancy_values = [int(float(log["occupancy_percent"])) for log in route_logs if log["occupancy_percent"]]
-        wait_values = [int(float(log["wait_minutes"])) for log in route_logs if log["wait_minutes"]]
-        crowding_by_route.append(
-            {
+        if route_id not in processed_route_ids:
+            crowding_by_route.append({
                 "route_id": route_id,
                 "route_name": route["name"],
-                "average_occupancy": round(sum(occupancy_values) / max(len(occupancy_values), 1), 1),
-                "average_wait": round(sum(wait_values) / max(len(wait_values), 1), 1),
+                "average_occupancy": 0.0,
+                "average_wait": 0.0,
                 "reliability": route["reliability"],
-            }
-        )
+            })
 
     return {
         "routes": list(routes.values()),
         "vehicles": vehicles,
-        "logs": logs,
+        # Convert df back to dict records so the existing frontend doesn't break
+        "logs": df.to_dict(orient="records") if not df.empty else [], 
         "crowding_by_route": crowding_by_route,
     }
 

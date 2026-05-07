@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+import random
 from pathlib import Path
 
 from flask import Flask, Response, jsonify, render_template, request
@@ -19,6 +21,15 @@ from route_ai import calculate_opportunity_access_score, dashboard_insights, pre
 
 BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__, template_folder=str(BASE_DIR / "templates"), static_folder=str(BASE_DIR / "static"))
+
+
+# --- Helper Function for IoT Simulation ---
+def simulate_iot_latency(min_sec: float = 0.3, max_sec: float = 0.8) -> None:
+    """
+    Introduces a random artificial delay to mimic the network latency 
+    of edge devices (like cameras) transmitting data over cellular networks.
+    """
+    time.sleep(random.uniform(min_sec, max_sec))
 
 
 @app.route("/")
@@ -43,6 +54,9 @@ def dashboard():
 
 @app.route("/api/vehicles")
 def api_vehicles():
+    # Simulate database/network fetch latency for fleet telemetry
+    simulate_iot_latency(0.2, 0.5)
+    
     vehicles = load_vehicles()["vehicles"]
     routes = get_route_lookup()
     enriched = []
@@ -60,6 +74,9 @@ def api_vehicles():
 
 @app.route("/api/monitor/status", methods=["GET", "POST"])
 def api_monitor_status():
+    # Simulate the critical edge computing delay from the YOLOv11 camera node
+    simulate_iot_latency(0.4, 0.9)
+    
     payload = request.get_json(silent=True) or {}
     vehicle_id = payload.get("vehicle_id") or request.args.get("vehicle_id", "JEEP-001")
     simulate = payload.get("simulate", request.args.get("simulate", "false").lower() == "true")
@@ -82,6 +99,9 @@ def api_monitor_frame():
 
     def stream():
         while True:
+            # MJPEG streaming handles its own pacing, but we can add a tiny tick
+            # to simulate frame encoding/transmission time from the edge node
+            time.sleep(0.05) 
             frame = people_counter.generate_frame(capacity=capacity, force_simulated=simulate)
             yield b"--frame\r\nContent-Type: image/jpeg\r\n\r\n" + frame + b"\r\n"
 
@@ -90,6 +110,7 @@ def api_monitor_frame():
 
 @app.route("/api/monitor/reset", methods=["POST"])
 def api_monitor_reset():
+    simulate_iot_latency(0.2, 0.4)
     payload = request.get_json(silent=True) or {}
     vehicle_id = payload.get("vehicle_id", "JEEP-001")
     vehicle = get_vehicle(vehicle_id)
@@ -103,6 +124,7 @@ def api_monitor_reset():
 
 @app.route("/api/vehicle/<vehicle_id>/status", methods=["POST"])
 def api_vehicle_status(vehicle_id: str):
+    simulate_iot_latency(0.3, 0.6)
     payload = request.get_json(force=True)
     new_status = payload.get("status")
     if not new_status:
@@ -114,6 +136,8 @@ def api_vehicle_status(vehicle_id: str):
 
 @app.route("/api/commuter/recommendation")
 def api_commuter_recommendation():
+    # Simulate processing time for the routing AI traversing live data
+    simulate_iot_latency(0.5, 1.0)
     priority = request.args.get("priority", "fastest")
     recommendation = suggest_smart_route(priority=priority)
     return jsonify(recommendation)
@@ -121,6 +145,7 @@ def api_commuter_recommendation():
 
 @app.route("/api/commuter/report", methods=["POST"])
 def api_commuter_report():
+    simulate_iot_latency(0.2, 0.5)
     payload = request.get_json(force=True)
     result = submit_commuter_report(payload)
     return jsonify(result)
@@ -128,6 +153,8 @@ def api_commuter_report():
 
 @app.route("/api/dashboard/summary")
 def api_dashboard_summary():
+    # Heavier endpoints simulate a larger data aggregation payload
+    simulate_iot_latency(0.6, 1.2)
     insights = dashboard_insights()
     opportunity = calculate_opportunity_access_score()
     return jsonify(
@@ -144,8 +171,10 @@ def api_dashboard_summary():
 
 @app.route("/api/opportunity-score")
 def api_opportunity_score():
+    simulate_iot_latency(0.4, 0.8)
     return jsonify(calculate_opportunity_access_score())
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Changed from 5000 to 5001 to avoid macOS AirPlay conflicts
+    app.run(debug=True, host="0.0.0.0", port=5001)
