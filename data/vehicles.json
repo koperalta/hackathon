@@ -1,0 +1,72 @@
+{
+  "vehicles": [
+    {
+      "id": "JEEP-001",
+      "route_id": "fairview-cubao",
+      "type": "Jeepney",
+      "driver_name": "Demo Driver 1",
+      "status": "Available",
+      "speed_kph": 18,
+      "capacity": 20,
+      "occupancy_count": 1,
+      "occupancy_percent": 5,
+      "occupancy_level": "Maluwag",
+      "confidence": 86,
+      "path_index": 8,
+      "lat": 14.6194,
+      "lng": 121.0538,
+      "updated_at": "2026-05-07T05:25:09.435585"
+    },
+    {
+      "id": "BUS-002",
+      "route_id": "commonwealth-quiapo",
+      "type": "Bus",
+      "driver_name": "Demo Driver 2",
+      "status": "Delayed",
+      "speed_kph": 22,
+      "capacity": 45,
+      "occupancy_count": 4,
+      "occupancy_percent": 8,
+      "occupancy_level": "Maluwag",
+      "confidence": 69,
+      "path_index": 7,
+      "lat": 14.6078,
+      "lng": 120.9976,
+      "updated_at": "2026-05-07T04:37:59.727745"
+    },
+    {
+      "id": "UV-003",
+      "route_id": "antipolo-ortigas",
+      "type": "UV Express",
+      "driver_name": "Demo Driver 3",
+      "status": "Available",
+      "speed_kph": 27,
+      "capacity": 18,
+      "occupancy_count": 16,
+      "occupancy_percent": 89,
+      "occupancy_level": "Medyo puno",
+      "confidence": 74,
+      "path_index": 4,
+      "lat": 14.5792,
+      "lng": 121.1046,
+      "updated_at": "2026-05-07T08:00:00"
+    },
+    {
+      "id": "TRIKE-004",
+      "route_id": "marikina-katipunan",
+      "type": "Tricycle",
+      "driver_name": "Demo Driver 4",
+      "status": "Break",
+      "speed_kph": 12,
+      "capacity": 6,
+      "occupancy_count": 6,
+      "occupancy_percent": 100,
+      "occupancy_level": "Siksikan",
+      "confidence": 66,
+      "path_index": 7,
+      "lat": 14.6338,
+      "lng": 121.0736,
+      "updated_at": "2026-05-07T04:53:10.687154"
+    }
+  ]
+}

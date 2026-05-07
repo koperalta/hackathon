@@ -1,0 +1,124 @@
+{
+  "routes": [
+    {
+      "id": "fairview-cubao",
+      "name": "Fairview to Cubao",
+      "mode": "Jeepney",
+      "fare": 18,
+      "capacity": 20,
+      "reliability": 76,
+      "traffic_factor": 1.25,
+      "accessibility_score": 71,
+      "student_friendly": true,
+      "safety_score": 68,
+      "barangays": ["Fairview", "Batasan Hills", "Cubao"],
+      "stops": [
+        {"name": "SM Fairview", "lat": 14.7347, "lng": 121.0563},
+        {"name": "Batasan", "lat": 14.6908, "lng": 121.0954},
+        {"name": "Cubao", "lat": 14.6194, "lng": 121.0538}
+      ],
+      "path": [
+        [14.7347, 121.0563],
+        [14.7220, 121.0660],
+        [14.7092, 121.0785],
+        [14.6980, 121.0897],
+        [14.6908, 121.0954],
+        [14.6740, 121.0895],
+        [14.6560, 121.0790],
+        [14.6368, 121.0675],
+        [14.6194, 121.0538]
+      ]
+    },
+    {
+      "id": "commonwealth-quiapo",
+      "name": "Commonwealth to Quiapo",
+      "mode": "Bus",
+      "fare": 28,
+      "capacity": 45,
+      "reliability": 81,
+      "traffic_factor": 1.35,
+      "accessibility_score": 73,
+      "student_friendly": true,
+      "safety_score": 74,
+      "barangays": ["Commonwealth", "Philcoa", "Quiapo"],
+      "stops": [
+        {"name": "Litex", "lat": 14.7038, "lng": 121.1025},
+        {"name": "Philcoa", "lat": 14.6519, "lng": 121.0499},
+        {"name": "Quiapo", "lat": 14.5997, "lng": 120.9842}
+      ],
+      "path": [
+        [14.7038, 121.1025],
+        [14.6910, 121.0920],
+        [14.6760, 121.0810],
+        [14.6615, 121.0645],
+        [14.6519, 121.0499],
+        [14.6345, 121.0294],
+        [14.6182, 121.0128],
+        [14.6078, 120.9976],
+        [14.5997, 120.9842]
+      ]
+    },
+    {
+      "id": "antipolo-ortigas",
+      "name": "Antipolo to Ortigas",
+      "mode": "UV Express",
+      "fare": 45,
+      "capacity": 18,
+      "reliability": 84,
+      "traffic_factor": 1.18,
+      "accessibility_score": 66,
+      "student_friendly": false,
+      "safety_score": 79,
+      "barangays": ["Antipolo", "Cainta", "Ortigas"],
+      "stops": [
+        {"name": "Antipolo Simbahan", "lat": 14.5870, "lng": 121.1766},
+        {"name": "Cainta Junction", "lat": 14.5775, "lng": 121.1228},
+        {"name": "Ortigas", "lat": 14.5876, "lng": 121.0637}
+      ],
+      "path": [
+        [14.5870, 121.1766],
+        [14.5845, 121.1580],
+        [14.5801, 121.1402],
+        [14.5775, 121.1228],
+        [14.5792, 121.1046],
+        [14.5826, 121.0865],
+        [14.5858, 121.0735],
+        [14.5876, 121.0637]
+      ]
+    },
+    {
+      "id": "marikina-katipunan",
+      "name": "Marikina to Katipunan",
+      "mode": "Tricycle",
+      "fare": 25,
+      "capacity": 6,
+      "reliability": 63,
+      "traffic_factor": 1.12,
+      "accessibility_score": 58,
+      "student_friendly": true,
+      "safety_score": 61,
+      "barangays": ["Marikina", "Tumana", "Katipunan"],
+      "stops": [
+        {"name": "Marikina Bayan", "lat": 14.6359, "lng": 121.0970},
+        {"name": "Tumana", "lat": 14.6590, "lng": 121.0928},
+        {"name": "Katipunan", "lat": 14.6338, "lng": 121.0736}
+      ],
+      "path": [
+        [14.6359, 121.0970],
+        [14.6445, 121.0968],
+        [14.6522, 121.0958],
+        [14.6590, 121.0928],
+        [14.6520, 121.0882],
+        [14.6450, 121.0830],
+        [14.6390, 121.0780],
+        [14.6338, 121.0736]
+      ]
+    }
+  ],
+  "opportunity_locations": [
+    {"name": "UP Diliman", "type": "school", "lat": 14.6536, "lng": 121.0684},
+    {"name": "Quezon City Hall", "type": "job", "lat": 14.6518, "lng": 121.0485},
+    {"name": "East Avenue Medical Center", "type": "hospital", "lat": 14.6415, "lng": 121.0493},
+    {"name": "TESDA QC", "type": "training", "lat": 14.6760, "lng": 121.0435}
+  ]
+}
