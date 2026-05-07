@@ -8,14 +8,14 @@
       "status": "Available",
       "speed_kph": 18,
       "capacity": 20,
-      "occupancy_count": 2,
-      "occupancy_percent": 10,
+      "occupancy_count": 1,
+      "occupancy_percent": 5,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 4,
-      "lat": 14.6908,
-      "lng": 121.0954,
-      "updated_at": "2026-05-07T07:25:46.949228"
+      "path_index": 0,
+      "lat": 14.7347,
+      "lng": 121.0563,
+      "updated_at": "2026-05-07T07:52:29.831450"
     },
     {
       "id": "BUS-002",
