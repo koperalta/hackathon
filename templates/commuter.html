@@ -3,114 +3,112 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BiyaheIQ | Commuter App</title>
-  
+  <title>Transit Hub | PITX Commuter</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Roboto', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            app: '0 24px 60px rgba(15, 23, 42, 0.12)',
+            card: '0 12px 32px rgba(15, 23, 42, 0.08)',
+            float: '0 8px 24px rgba(15, 23, 42, 0.10)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg app-navbar sticky-top border-bottom border-dark">
-    <div class="container">
-      <a class="navbar-brand text-gold fw-bold" href="/">BiyaheIQ</a>
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="navbar-nav ms-auto gap-lg-3">
-          <a class="nav-link text-white" href="/monitor">Vehicle IoT Feed</a>
-          <a class="nav-link active text-gold" href="/commuter">Commuter App</a>
-          <a class="nav-link text-white" href="/dashboard">Intelligence Hub</a>
-        </div>
+<body class="min-h-screen bg-gray-100 font-sans text-gray-900 antialiased">
+  <main class="px-4 py-6 sm:px-6 sm:py-10">
+    <div class="mx-auto max-w-5xl">
+      <div class="mx-auto max-w-md rounded-[36px] bg-gray-50 p-4 shadow-app sm:p-5">
+        <header class="mb-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs uppercase tracking-[0.2em] text-gray-400">Transit Hub</div>
+              <h1 class="mt-1 text-2xl font-bold">PITX Terminal</h1>
+              <p class="mt-2 text-sm text-gray-500">Live queue detection + predictive wait time (demo feed).</p>
+            </div>
+            <a href="/" class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-50">
+              Home
+            </a>
+          </div>
+        </header>
+
+        <!-- HERO: Live video + overlays -->
+        <section class="rounded-3xl bg-white p-3 shadow-lg">
+          <div class="relative overflow-hidden rounded-3xl bg-black">
+            <img
+              id="pitxVideo"
+              src="/video_feed"
+              alt="PITX live feed"
+              class="h-80 w-full object-cover"
+            />
+
+            <!-- Camera overlays -->
+            <div class="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/45 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+              <span class="h-2.5 w-2.5 rounded-full bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)]"></span>
+              LIVE
+            </div>
+            <div class="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+              REC
+            </div>
+            <div id="timestampLabel" class="absolute right-4 top-14 rounded-full bg-black/45 px-3 py-1.5 text-xs font-medium text-white/90 backdrop-blur">
+              --
+            </div>
+
+            <!-- Bottom overlays -->
+            <div class="absolute bottom-4 left-4 right-4 flex flex-col gap-2">
+              <div id="waitBadge" class="rounded-2xl bg-white px-4 py-3 text-gray-900 shadow-float">
+                <div class="text-[11px] uppercase tracking-[0.22em] text-gray-500">Predictive AI</div>
+                <div class="mt-1 text-lg font-semibold">PITX Estimated Wait: -- mins</div>
+              </div>
+              <div class="flex gap-2">
+                <div id="peopleBadge" class="rounded-xl bg-black/55 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
+                  People Count: --
+                </div>
+                <div id="serviceLevelBadge" class="rounded-xl bg-black/55 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
+                  Service: --
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Alternative route suggestion -->
+        <section class="mt-4 rounded-3xl bg-blue-50 p-5 shadow-card">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">Actionable</div>
+              <h2 class="mt-2 text-lg font-semibold text-gray-900">Smart Route Alternative</h2>
+            </div>
+            <div id="timeSavedBadge" class="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+              --
+            </div>
+          </div>
+          <p id="routeSuggestion" class="mt-3 text-sm leading-6 text-gray-700">
+            Loading route suggestion...
+          </p>
+        </section>
+
+        <footer class="mt-5 rounded-2xl bg-white p-4 text-xs text-gray-500 shadow-sm">
+          Aligned with SDGs 4, 8, 10, &amp; 11.
+        </footer>
       </div>
     </div>
-  </nav>
+  </main>
 
-  <main class="container page-shell my-3 my-md-5">
-    <div class="row g-3 g-md-4">
-      
-      <div class="col-lg-8 col-12">
-        <div class="card section-card h-100">
-          <div class="card-body p-3">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
-              <div class="mb-2 mb-md-0">
-                <div class="mono-label mb-1">Intelligence Hub</div>
-                <h3 class="mb-0 text-gold">Live Mobility Map</h3>
-                <small class="text-secondary d-none d-sm-block">Real-time occupancy-aware transit markers.</small>
-              </div>
-              <button id="refreshMapBtn" class="btn btn-sm btn-outline-gold w-100 w-md-auto">Refresh Vehicles</button>
-            </div>
-            
-            <div class="route-line-legend mb-3"></div>
-            <div id="commuterMap" class="map-panel"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-12">
-        
-        <div class="card section-card p-3 p-md-4 mb-3">
-          <div class="mono-label mb-2">Control Wing</div>
-          <h4 class="text-gold mb-3 fs-5">Route Preference</h4>
-          <select id="prioritySelect" class="form-select mb-3">
-            <option value="fastest">Fastest route</option>
-            <option value="cheapest">Cheapest route</option>
-            <option value="least_crowded">Least crowded route</option>
-            <option value="student_friendly">Student-friendly route</option>
-            <option value="safest">Safest route</option>
-            <option value="most_reliable">Most reliable route</option>
-          </select>
-          <button id="getRecommendationBtn" class="btn btn-primary w-100">Reveal Smart Recommendation</button>
-        </div>
-
-        <div id="smartRecommendation" class="card section-card mb-3">
-          <div class="card-body p-4">
-            <div class="mono-label mb-2">Smart Recommendation</div>
-            <h4 class="mb-3 text-gold fs-5">Best Route Now</h4>
-            
-            <div id="bestRouteCard" class="route-card rounded-4 p-3 border-0 bg-dark">
-              Loading recommendation...
-            </div>
-            
-            <div id="alternativeRoutes" class="mt-3 d-grid gap-2"></div>
-        
-            <div class="mt-3 pt-3 border-top border-secondary">
-                <div class="mono-label mb-1">AI Future Outlook</div>
-                <div class="d-flex align-items-center">
-                    <span class="text-gold me-2">●</span>
-                    <span id="forecastText" class="small text-platinum">Analyzing historical patterns for later today...</span>
-                </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card section-card">
-          <div class="card-body p-4">
-            <div class="mono-label mb-2">Ground Signal</div>
-            <h4 class="mb-3 text-gold fs-5">Commuter Report</h4>
-            <select id="reportVehicleSelect" class="form-select mb-3"></select>
-            <select id="reportTypeSelect" class="form-select mb-3">
-              <option>Full vehicle</option>
-              <option>Long queue</option>
-              <option>No available ride</option>
-              <option>Unsafe stop</option>
-              <option>Fare issue</option>
-              <option>Route unavailable</option>
-            </select>
-            <input id="barangayInput" class="form-control mb-3" placeholder="Barangay or stop">
-            <button id="submitReportBtn" class="btn btn-outline-gold w-100">Submit Report</button>
-            <div id="reportResult" class="footer-note mt-3 small text-center text-secondary"></div>
-          </div>
-        </div>
-
-      </div> </div> </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="{{ url_for('static', filename='js/commuter.js') }}"></script>
 </body>
 </html>

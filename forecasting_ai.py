@@ -1,70 +1,87 @@
-# forecasting_ai.py
-import pandas as pd
-import numpy as np
-from sklearn.ensemble import RandomForestRegressor
-from datetime import datetime, timedelta
-import joblib
-from data_store import LOGS_FILE
+from __future__ import annotations
 
-class CrowdingForecaster:
-    def __init__(self):
-        self.model = RandomForestRegressor(n_estimators=100)
-        self.is_trained = False
+from collections import deque
+from dataclasses import dataclass
+from math import ceil
+from typing import Deque, Dict
 
-    # forecasting_ai.py (Update this function)
 
-    def _prepare_features(self, df):
-        """
-        Converts raw timestamps into numerical features the AI can understand.
-        """
-        # FIX: Added format='ISO8601' to handle varying precision in timestamps
-        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
-        
-        df['hour'] = df['timestamp'].dt.hour
-        df['day_of_week'] = df['timestamp'].dt.dayofweek
-        df['month'] = df['timestamp'].dt.month
-        
-        # Keep the rest of your logic...
-        df['is_raining'] = np.random.choice([0, 1], size=len(df), p=[0.8, 0.2]) 
-        df['is_holiday'] = df['day_of_week'].apply(lambda x: 1 if x >= 5 else 0)
-        
-        return df[['hour', 'day_of_week', 'month', 'is_raining', 'is_holiday']]
+@dataclass
+class PitxWaitPrediction:
+    people_count: int
+    estimated_wait_minutes: int
+    service_level: str
 
-    def train(self):
-        """
-        Loads mobility_logs.csv and trains the model.
-        """
-        try:
-            df = pd.read_csv(LOGS_FILE)
-            if len(df) < 50: # Minimum data threshold
-                return False
-            
-            X = self._prepare_features(df)
-            y = df['occupancy_percent']
-            
-            self.model.fit(X, y)
-            self.is_trained = True
-            return True
-        except Exception as e:
-            print(f"Training failed: {e}")
-            return False
 
-    def predict_future(self, target_time: datetime, is_raining: bool = False):
-        """
-        Predicts occupancy percent for a specific future point in time.
-        """
-        if not self.is_trained:
-            return 25 # Fallback to a baseline occupancy
-        
-        features = pd.DataFrame([{
-            'hour': target_time.hour,
-            'day_of_week': target_time.dayofweek,
-            'month': target_time.month,
-            'is_raining': 1 if is_raining else 0,
-            'is_holiday': 1 if target_time.dayofweek >= 5 else 0
-        }])
-        
-        prediction = self.model.predict(features)[0]
-        return round(float(prediction), 1)
+class PitxWaitTimeForecaster:
+    """
+    Demo-optimized wait-time forecaster for PITX using only live people counts.
 
-forecaster = CrowdingForecaster()
+    Why this approach:
+      - deterministic + explainable for judges
+      - no heavy ML deps (sklearn/torch) beyond YOLO itself
+      - stable output via smoothing (prevents "jittery" demo UI)
+    """
+
+    def __init__(self) -> None:
+        self._recent_counts: Deque[int] = deque(maxlen=12)
+
+        # PITX queue assumptions (tune these for your demo video):
+        self.bus_capacity = 45            # average bus capacity per dispatch
+        self.dispatch_headway_min = 6     # average minutes between bus dispatch
+        self.boarding_rate_per_min = 9    # boarding throughput at gate (pax/min)
+        self.base_overhead_min = 3        # ticketing / walking / gate friction
+
+    def _smoothed_count(self, current: int) -> int:
+        self._recent_counts.append(int(current))
+        # Simple trimmed mean-ish smoothing: average the last N
+        values = list(self._recent_counts)
+        if not values:
+            return current
+        values.sort()
+        if len(values) >= 6:
+            values = values[1:-1]  # trim extremes
+        return int(round(sum(values) / len(values)))
+
+    def _service_level(self, wait_minutes: int) -> str:
+        if wait_minutes >= 25:
+            return "Heavy"
+        if wait_minutes >= 16:
+            return "Moderate"
+        return "Light"
+
+    def predict(self, current_people_count: int) -> PitxWaitPrediction:
+        people = max(0, int(current_people_count))
+        smoothed = self._smoothed_count(people)
+
+        # 1) Dispatch cycles needed to clear the current queue
+        cycles = max(1, ceil(smoothed / max(self.bus_capacity, 1)))
+        dispatch_wait = (cycles - 1) * self.dispatch_headway_min
+
+        # 2) Boarding time for the queue currently visible (bounded by headway)
+        boarding_time = min(
+            self.dispatch_headway_min,
+            int(round(smoothed / max(self.boarding_rate_per_min, 1))),
+        )
+
+        # 3) Total wait estimate
+        wait_minutes = self.base_overhead_min + dispatch_wait + boarding_time
+        wait_minutes = max(4, min(60, int(wait_minutes)))
+
+        return PitxWaitPrediction(
+            people_count=people,
+            estimated_wait_minutes=wait_minutes,
+            service_level=self._service_level(wait_minutes),
+        )
+
+    def as_dict(self, current_people_count: int) -> Dict[str, object]:
+        pred = self.predict(current_people_count)
+        return {
+            "people_count": pred.people_count,
+            "estimated_wait_minutes": pred.estimated_wait_minutes,
+            "service_level": pred.service_level,
+        }
+
+
+pitx_forecaster = PitxWaitTimeForecaster()
+

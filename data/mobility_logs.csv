@@ -889,3 +889,154 @@ timestamp,vehicle_id,route_id,event_type,occupancy_count,occupancy_percent,statu
 2026-05-07T10:18:58.232264,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
 2026-05-07T10:19:01.078110,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
 2026-05-07T10:19:03.778603,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T10:56:02.180331,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T10:56:06.201875,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T10:56:09.038446,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T10:56:12.101198,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T10:56:14.666668,BUS-002,commonwealth-quiapo,telemetry,1,2,Delayed,4,Quiapo,,94
+2026-05-07T10:56:15.000104,BUS-002,commonwealth-quiapo,telemetry,1,2,Delayed,4,Quiapo,,94
+2026-05-07T10:56:16.138138,UV-003,antipolo-ortigas,telemetry,1,5,Available,4,Ortigas,,94
+2026-05-07T10:56:18.102129,UV-003,antipolo-ortigas,telemetry,1,5,Available,4,Ortigas,,94
+2026-05-07T10:56:18.307225,TRIKE-004,marikina-katipunan,telemetry,1,16,Break,6,Marikina,,94
+2026-05-07T10:56:20.937650,TRIKE-004,marikina-katipunan,telemetry,1,16,Break,6,Tumana,,94
+2026-05-07T10:56:23.039502,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T10:56:24.075981,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T10:56:27.056920,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:42.938015,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:44.331130,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:47.037176,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:50.233199,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:53.239737,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:55.999701,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:12:59.434740,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:13:02.071969,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:13:57.736443,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:01.502205,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:04.533510,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:07.467149,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:10.540698,JEEP-001,fairview-cubao,telemetry,2,10,Available,4,Cubao,,94
+2026-05-07T11:14:13.239296,JEEP-001,fairview-cubao,telemetry,2,10,Available,4,Cubao,,94
+2026-05-07T11:14:16.338976,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:19.612656,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:14:22.667569,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:14:25.411176,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:28.445970,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:31.444528,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:34.710752,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:37.350414,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:40.516807,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:43.218508,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:46.922135,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:14:49.817777,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:14:52.991200,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:55.629861,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:14:58.860944,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:02.029034,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:05.021336,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:08.061439,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:10.733603,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:13.800020,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:15:16.800380,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:15:19.788399,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:22.731485,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:25.856949,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:29.055526,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:32.036760,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:34.940810,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:37.773771,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:15:40.978325,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:15:43.942966,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:16:31.063278,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:17:30.749291,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:18:30.612297,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:19:30.762732,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:20:30.938325,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:21:30.886071,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:22:31.140221,JEEP-001,fairview-cubao,telemetry,0,0,Available,4,Cubao,,94
+2026-05-07T11:23:31.345061,JEEP-001,fairview-cubao,telemetry,0,0,Available,4,Fairview,,94
+2026-05-07T11:24:31.335443,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:25:30.976521,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:26:31.005282,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:27:31.006649,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:28:31.297984,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:28:57.746349,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:28:58.878312,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:29:01.740355,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:31:32.714273,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:32:31.280456,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:38:19.996148,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:21.279062,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:31.344954,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:42.494251,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:45.619825,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:48.619018,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:51.513156,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:38:54.481856,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:38:57.461389,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:39:00.256707,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:39:31.095065,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:40:31.010493,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:30.754609,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:31.295127,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:33.495207,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:36.566825,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:39.808592,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:41:43.022644,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:41:46.180255,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:49.142414,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:52.183088,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:55.100471,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:41:58.121211,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:00.914119,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:03.846524,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:07.280440,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:42:10.159617,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:42:12.925079,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:16.076393,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:19.020889,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:21.890035,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:25.277843,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:28.205421,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:31.102134,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:42:31.171352,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:42:33.871566,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:42:37.091743,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:43:30.970822,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:43:31.013974,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:44:30.939666,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:44:31.019612,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:45:30.858672,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:45:31.112941,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:46:30.920319,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:46:30.972518,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:47:30.853368,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:47:31.050112,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:47:59.456387,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:00.539354,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:03.504081,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:07.126679,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:10.175214,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:13.200350,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:48:15.840462,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:48:18.864799,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:22.072151,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:24.879179,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:28.144713,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:31.117670,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:31.171912,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:34.282127,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:37.225463,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:48:40.120643,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:48:42.988043,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:46.319153,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:49.315835,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:52.290107,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:55.124966,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:48:58.151805,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:49:01.032311,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:49:30.883333,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Fairview,,94
+2026-05-07T11:49:31.339570,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Batasan Hills,,94
+2026-05-07T11:50:30.976468,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:50:31.273823,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:51:31.043446,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
+2026-05-07T11:51:31.263819,JEEP-001,fairview-cubao,telemetry,1,5,Available,4,Cubao,,94
