@@ -1,120 +1,121 @@
-let commuterMap;
-let routeLayers = [];
-let vehicleMarkers = [];
+// static/js/commuter.js
 
-function getMarkerColor(percent) {
-  if (percent >= 90) return '#ff4444';
-  if (percent >= 50) return '#b8860b';
-  return '#ffc107';
+const MONITOR_INTERVAL_MS = 3000; // Poll the edge cameras every 3 seconds
+let activeReroute = false;
+
+/**
+ * Continuously polls the edge IoT simulation to monitor the queue vs. capacity.
+ */
+async function fetchLiveGateStatus() {
+    try {
+        // Fetching the simulated edge data from the Flask backend
+        const response = await fetch('/api/monitor/status?vehicle_id=JEEP-001');
+        const data = await response.json();
+
+        updateLiveDeparturesBoard(data);
+
+        // Core Logic: Trigger auto-reroute if occupancy hits "Siksikan" threshold
+        if (data.occupancy.occupancy_percent >= 90 && !activeReroute) {
+            await triggerAutoReroute();
+        } else if (data.occupancy.occupancy_percent < 90 && activeReroute) {
+            // Queue has cleared, reset the UI
+            resetGateUI();
+        }
+    } catch (error) {
+        console.error("Error fetching live gate status:", error);
+    }
 }
 
-function createVehicleIcon(percent) {
-  return L.divIcon({
-    className: '',
-    html: `<div style="background:${getMarkerColor(percent)};width:18px;height:18px;border-radius:50%;border:2px solid #000;box-shadow:0 0 10px ${getMarkerColor(percent)};"></div>`,
-    iconSize: [18, 18]
-  });
+/**
+ * Updates the standard data labels on the Gate Card.
+ */
+function updateLiveDeparturesBoard(data) {
+    const queueLabel = document.getElementById('live-queue-count');
+    const statusLabel = document.getElementById('live-gate-status');
+    
+    if (queueLabel) queueLabel.innerText = `${data.occupancy.count} pax`;
+    if (statusLabel) statusLabel.innerText = data.occupancy.occupancy_level;
 }
 
-async function loadVehiclesAndMap() {
-  const response = await fetch('/api/vehicles');
-  const data = await response.json();
-  const vehicles = data.vehicles || [];
-  const reportVehicleSelect = document.getElementById('reportVehicleSelect');
-  reportVehicleSelect.innerHTML = vehicles.map(vehicle => (
-    `<option value="${vehicle.id}">${vehicle.id} · ${vehicle.prediction.route_name}</option>`
-  )).join('');
+/**
+ * Executes the visual transition and fetches the intelligent fallback route.
+ */
+async function triggerAutoReroute() {
+    activeReroute = true;
+    
+    // 1. Instantly update the primary Gate Card border to Alert Red
+    const gateCard = document.getElementById('primary-gate-card');
+    if (gateCard) {
+        gateCard.classList.remove('status-comfortable');
+        gateCard.classList.add('status-siksikan');
+    }
 
-  if (!commuterMap) {
-    commuterMap = L.map('commuterMap').setView([14.645, 121.055], 11);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    }).addTo(commuterMap);
-  }
+    // 2. Fetch Alternative Route via the Python AI Backend
+    try {
+        const response = await fetch('/api/commuter/recommendation?priority=least_crowded');
+        const recommendation = await response.json();
+        
+        // 3. Inject the floating recommendation banner
+        showRerouteBanner(recommendation.best_route);
+    } catch (error) {
+        console.error("Error calculating alternative route:", error);
+    }
+}
 
-  routeLayers.forEach(layer => commuterMap.removeLayer(layer));
-  vehicleMarkers.forEach(marker => commuterMap.removeLayer(marker));
-  routeLayers = [];
-  vehicleMarkers = [];
+/**
+ * Dynamically constructs and animates a floating banner to suggest the new route.
+ */
+function showRerouteBanner(bestRoute) {
+    const boardContainer = document.getElementById('live-departures-board');
+    if (!boardContainer) return;
+    
+    // Ensure we do not stack multiple banners
+    if (document.getElementById('auto-reroute-banner')) return;
 
-  vehicles.forEach(vehicle => {
-    const path = vehicle.route_name;
-    const popupHtml = `
-      <strong>${vehicle.id}</strong><br>
-      ${path}<br>
-      ETA: ${vehicle.prediction.eta_minutes} min<br>
-      Occupancy: ${vehicle.occupancy_percent}%<br>
-      Fare: PHP ${vehicle.prediction.fare}<br>
-      Status: ${vehicle.status}
+    const banner = document.createElement('div');
+    banner.id = 'auto-reroute-banner';
+    banner.className = 'reroute-banner slide-down-animation';
+    
+    // Constructing the HTML natively without reloading the page
+    banner.innerHTML = `
+        <div class="banner-content">
+            <div class="banner-text">
+                <h4 style="color: #FFC107; margin: 0; font-size: 16px;">✨ Magic Auto-Reroute Triggered</h4>
+                <p style="margin: 4px 0 0; font-size: 14px; color: #E0E0E0;">
+                    Gate queue is currently <strong>Siksikan</strong>. 
+                    Switch to <strong>${bestRoute.route_name}</strong> at Gate 6. 
+                    <br>Status: ${bestRoute.occupancy_level} (${bestRoute.occupancy_percent}%) | ETA: ${bestRoute.eta_minutes} min.
+                </p>
+            </div>
+            <button class="accept-reroute-btn" onclick="acceptNewRoute()">Accept Seat</button>
+        </div>
     `;
-    const marker = L.marker([vehicle.lat, vehicle.lng], { icon: createVehicleIcon(vehicle.occupancy_percent) })
-      .addTo(commuterMap)
-      .bindPopup(popupHtml);
-    vehicleMarkers.push(marker);
-  });
-
-  vehicles.forEach(vehicle => {
-    if (routeLayers.some(layer => layer.routeId === vehicle.route_id)) return;
-    const latlngs = vehicle.route_path.map(point => [point[0], point[1]]);
-    const layer = L.polyline(latlngs, {
-      color: '#ffc107',
-      weight: 6,
-      opacity: 0.88
-    }).addTo(commuterMap);
-    layer.routeId = vehicle.route_id;
-    layer.bindPopup(`<strong>${vehicle.route_name}</strong><br>${vehicle.type} corridor`);
-    routeLayers.push(layer);
-  });
+    
+    // Insert the banner above the main board to adhere to the "Never hide the board" UX rule
+    boardContainer.parentNode.insertBefore(banner, boardContainer);
 }
 
-function renderRecommendation(data) {
-  const best = data.best_route;
-  const bestRouteCard = document.getElementById('bestRouteCard');
-  bestRouteCard.innerHTML = `
-    <div class="mono-label mb-2">Magic Route Match</div>
-    <div class="fw-bold fs-5 mb-2 text-gold">${best.route_name}</div>
-    <div class="mb-2 text-secondary">${best.mode} · ${best.status}</div>
-    <div class="mb-2">ETA: <strong>${best.eta_minutes} min</strong></div>
-    <div class="mb-2">Fare: <strong>PHP ${best.fare}</strong></div>
-    <div class="mb-2">Occupancy: <strong>${best.occupancy_percent}%</strong></div>
-    <div class="text-secondary">${best.recommendation_reason}</div>
-  `;
-  bestRouteCard.className = `route-card fleet-card rounded-4 p-3 ${best.occupancy_percent > 90 ? 'full-route' : ''}`;
-
-  document.getElementById('alternativeRoutes').innerHTML = data.alternatives.map(route => `
-    <div class="route-card fleet-card rounded-4 p-3 ${route.occupancy_percent > 90 ? 'full-route' : ''}">
-      <div class="fw-semibold text-gold">${route.route_name}</div>
-      <div class="small text-secondary">${route.mode} · ETA ${route.eta_minutes} min · ${route.occupancy_percent}% full</div>
-    </div>
-  `).join('');
+function acceptNewRoute() {
+    // Logic to confirm the new route and update the primary tracking view
+    alert("Route updated successfully. Proceed to the new gate.");
+    resetGateUI();
 }
 
-async function getRecommendation() {
-  const priority = document.getElementById('prioritySelect').value;
-  const response = await fetch(`/api/commuter/recommendation?priority=${priority}`);
-  const data = await response.json();
-  renderRecommendation(data);
+function resetGateUI() {
+    activeReroute = false;
+    const gateCard = document.getElementById('primary-gate-card');
+    if (gateCard) {
+        gateCard.classList.remove('status-siksikan');
+        gateCard.classList.add('status-comfortable');
+    }
+    
+    const banner = document.getElementById('auto-reroute-banner');
+    if (banner) {
+        banner.remove();
+    }
 }
 
-async function submitReport() {
-  const payload = {
-    vehicle_id: document.getElementById('reportVehicleSelect').value,
-    report_type: document.getElementById('reportTypeSelect').value,
-    barangay: document.getElementById('barangayInput').value || 'Community Report',
-    wait_minutes: 12
-  };
-
-  const response = await fetch('/api/commuter/report', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  const data = await response.json();
-  document.getElementById('reportResult').textContent = `${data.message}: ${data.report_type} for ${data.vehicle_id}`;
-}
-
-document.getElementById('getRecommendationBtn').addEventListener('click', getRecommendation);
-document.getElementById('submitReportBtn').addEventListener('click', submitReport);
-document.getElementById('refreshMapBtn').addEventListener('click', loadVehiclesAndMap);
-
-Promise.all([loadVehiclesAndMap(), getRecommendation()]).catch(console.error);
+// Boot up the monitoring loop when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setInterval(fetchLiveGateStatus, MONITOR_INTERVAL_MS);
+});

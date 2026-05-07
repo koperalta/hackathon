@@ -3,7 +3,9 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from datetime import datetime
 from math import radians, sin, cos, sqrt, atan2
-from typing import Dict, List
+from typing import Dict, List, Optional
+
+import pandas as pd
 
 from data_store import get_dashboard_dataset, get_route_lookup, load_routes, load_vehicles, read_logs
 
@@ -142,29 +144,62 @@ def _build_reason(priority: str, prediction: Dict, route: Dict, vehicle: Dict) -
     return f"{route['name']} balances ETA ({prediction['eta_minutes']} min), fare, and crowding for today's trip."
 
 
+def label_opportunity_score(score: float) -> str:
+    if score >= 80:
+        return "Good access"
+    if score >= 60:
+        return "Moderate access"
+    if score >= 40:
+        return "Limited access"
+    return "Opportunity gap area"
+
+
 def calculate_opportunity_access_score() -> Dict:
     routes_payload = load_routes()
     routes = routes_payload["routes"]
-    logs = read_logs()
-    report_counts = Counter(log["barangay"] for log in logs if log["event_type"] == "report")
-    telemetry_by_barangay: Dict[str, List[Dict]] = defaultdict(list)
+    
+    # Dynamically import the file path to avoid circular dependencies
+    from data_store import LOGS_FILE 
+    
+    try:
+        df = pd.read_csv(LOGS_FILE)
+        df['wait_minutes'] = pd.to_numeric(df['wait_minutes'], errors='coerce')
+        df['occupancy_percent'] = pd.to_numeric(df['occupancy_percent'], errors='coerce')
+    except Exception:
+        df = pd.DataFrame(columns=['event_type', 'barangay', 'wait_minutes', 'occupancy_percent'])
 
-    for log in logs:
-        telemetry_by_barangay[log["barangay"]].append(log)
+    # 1. Vectorized Report Counting
+    if not df.empty and 'event_type' in df.columns:
+        report_counts = df[df['event_type'] == 'report']['barangay'].value_counts().to_dict()
+        
+        # 2. Vectorized Telemetry Aggregation
+        telemetry_df = df.groupby('barangay').agg(
+            avg_wait=('wait_minutes', 'mean'),
+            avg_crowding=('occupancy_percent', 'mean')
+        ).to_dict(orient='index')
+    else:
+        report_counts = {}
+        telemetry_df = {}
 
     scores = []
+    
+    # Calculate the localized Opportunity Index
     for route in routes:
         for barangay in route["barangays"]:
-            local_logs = telemetry_by_barangay.get(barangay, [])
-            avg_wait = sum(int(float(log["wait_minutes"])) for log in local_logs) / max(len(local_logs), 1)
-            avg_crowding = sum(int(float(log["occupancy_percent"])) for log in local_logs if log["occupancy_percent"]) / max(len(local_logs), 1)
+            b_stats = telemetry_df.get(barangay, {'avg_wait': 0, 'avg_crowding': 0})
+            
+            avg_wait = b_stats['avg_wait'] if pd.notna(b_stats['avg_wait']) else 0
+            avg_crowding = b_stats['avg_crowding'] if pd.notna(b_stats['avg_crowding']) else 0
+            
             route_availability = 82 if any(r["id"] == route["id"] for r in routes) else 60
             affordability = max(35, 100 - route["fare"] * 1.2)
             school_access = 78 if route["student_friendly"] else 62
             healthcare_access = route["accessibility_score"]
             reliability = route["reliability"]
+            
             congestion_penalty = avg_crowding * 0.22
             report_penalty = report_counts.get(barangay, 0) * 6
+            
             score = (
                 school_access * 0.16
                 + healthcare_access * 0.16
@@ -176,33 +211,23 @@ def calculate_opportunity_access_score() -> Dict:
             ) - report_penalty
 
             score = max(20, min(96, round(score, 1)))
-            scores.append(
-                {
-                    "barangay": barangay,
-                    "route_name": route["name"],
-                    "score": score,
-                    "label": label_opportunity_score(score),
-                    "average_wait": round(avg_wait, 1),
-                    "average_crowding": round(avg_crowding, 1),
-                }
-            )
+            
+            scores.append({
+                "barangay": barangay,
+                "route_name": route["name"],
+                "score": score,
+                "label": label_opportunity_score(score),
+                "average_wait": round(avg_wait, 1),
+                "average_crowding": round(avg_crowding, 1),
+            })
 
     scores.sort(key=lambda item: item["score"])
+    
     return {
         "scores": scores,
         "underserved_areas": [item for item in scores if item["score"] < 60][:5],
         "high_access_areas": [item for item in scores if item["score"] >= 80][:5],
     }
-
-
-def label_opportunity_score(score: float) -> str:
-    if score >= 80:
-        return "Good access"
-    if score >= 60:
-        return "Moderate access"
-    if score >= 40:
-        return "Limited access"
-    return "Opportunity gap area"
 
 
 def dashboard_insights() -> Dict:
