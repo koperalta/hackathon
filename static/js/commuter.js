@@ -119,3 +119,58 @@ function resetGateUI() {
 document.addEventListener('DOMContentLoaded', () => {
     setInterval(fetchLiveGateStatus, MONITOR_INTERVAL_MS);
 });
+
+// Function to update the AI Future Outlook section
+async function updateFutureForecast() {
+  const forecastElement = document.getElementById('forecastText');
+  
+  try {
+      // Fetch prediction for 2 hours from now
+      const response = await fetch('/api/forecast');
+      const data = await response.json();
+      
+      if (data.predicted_occupancy !== undefined) {
+          forecastElement.innerText = `${data.advice} (Predicted: ${data.predicted_occupancy}%)`;
+          
+          // Optional: Dynamic coloring based on crowding
+          if (data.predicted_occupancy > 70) {
+              forecastElement.classList.add('text-danger');
+          } else {
+              forecastElement.classList.remove('text-danger');
+          }
+      }
+  } catch (error) {
+      console.error("Forecast fetch failed:", error);
+      forecastElement.innerText = "Forecast currently unavailable.";
+  }
+}
+
+// Call this whenever recommendations are refreshed
+document.getElementById('getRecommendationBtn').addEventListener('click', () => {
+  // ... existing recommendation logic ...
+  updateFutureForecast();
+});
+
+// Function to fetch and display the AI's predictive outlook
+async function refreshAIOutlook() {
+  const forecastText = document.getElementById('forecastText');
+  
+  try {
+      const response = await fetch('/api/forecast');
+      const data = await response.json();
+      
+      if (data.predicted_occupancy) {
+          forecastText.innerText = `${data.advice} (Expected Density: ${data.predicted_occupancy}%)`;
+          
+          // Visual cue: Change color if density is high
+          forecastText.style.color = data.predicted_occupancy > 75 ? "#FF4444" : "#E0E0E0";
+      }
+  } catch (err) {
+      console.error("AI Forecast failed:", err);
+  }
+}
+
+// Hook into your existing recommendation button
+document.getElementById('getRecommendationBtn').addEventListener('click', () => {
+  refreshAIOutlook();
+});

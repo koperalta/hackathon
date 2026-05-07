@@ -12,10 +12,10 @@
       "occupancy_percent": 5,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 0,
-      "lat": 14.7347,
-      "lng": 121.0563,
-      "updated_at": "2026-05-07T07:52:29.831450"
+      "path_index": 4,
+      "lat": 14.6908,
+      "lng": 121.0954,
+      "updated_at": "2026-05-07T10:19:03.778598"
     },
     {
       "id": "BUS-002",
@@ -25,14 +25,14 @@
       "status": "Delayed",
       "speed_kph": 22,
       "capacity": 45,
-      "occupancy_count": 2,
-      "occupancy_percent": 4,
+      "occupancy_count": 1,
+      "occupancy_percent": 2,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 0,
-      "lat": 14.7038,
-      "lng": 121.1025,
-      "updated_at": "2026-05-07T07:24:51.387741"
+      "path_index": 1,
+      "lat": 14.691,
+      "lng": 121.092,
+      "updated_at": "2026-05-07T08:04:54.684616"
     },
     {
       "id": "UV-003",

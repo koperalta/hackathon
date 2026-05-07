@@ -14,9 +14,11 @@ from data_store import (
     submit_commuter_report,
     update_vehicle_location,
     update_vehicle_status,
+    sync_live_fleet_telemetry,
 )
 from people_counter import people_counter
 from route_ai import calculate_opportunity_access_score, dashboard_insights, predict_eta_and_crowding, suggest_smart_route
+from forecasting_ai import forecaster
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -173,6 +175,46 @@ def api_dashboard_summary():
 def api_opportunity_score():
     simulate_iot_latency(0.4, 0.8)
     return jsonify(calculate_opportunity_access_score())
+
+@app.route("/api/fleet/sync", methods=["POST", "GET"])
+def api_fleet_sync():
+    """
+    Trigger a synchronization with the real-world Transit API.
+    Can be called by a cron job or an external webhook.
+    """
+    # Verify authentication if necessary
+    # api_key = request.headers.get("X-API-Key")
+    
+    try:
+        updated_fleet = sync_live_fleet_telemetry()
+        return jsonify({
+            "status": "success",
+            "message": f"Synced {len(updated_fleet)} vehicles from live feed",
+            "timestamp": datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/forecast")
+def api_get_forecast():
+    # Predict for 2 hours from now
+    target_time = datetime.now() + timedelta(hours=2)
+    
+    # Optional: Get current weather status from an external API
+    is_raining = request.args.get("weather") == "rain"
+    
+    prediction = forecaster.predict_future(target_time, is_raining=is_raining)
+    
+    return jsonify({
+        "target_time": target_time.isoformat(),
+        "predicted_occupancy": prediction,
+        "advice": "High crowding expected. Consider leaving 30 mins early." if prediction > 75 else "Smooth commute predicted."
+    })
+
+@app.route("/api/forecast/train", methods=["POST"])
+def api_train_model():
+    success = forecaster.train()
+    return jsonify({"status": "success" if success else "failed"})
 
 
 if __name__ == "__main__":
