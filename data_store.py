@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
+from transit_api import transit_client
 
 import pandas as pd
 
@@ -276,3 +277,42 @@ def normalize_vehicle_occupancy(vehicle: Dict) -> Dict:
     vehicle["occupancy_percent"] = percent
     vehicle["occupancy_level"] = _level_from_percent(percent)
     return vehicle
+
+def sync_live_fleet_telemetry() -> List[Dict]:
+    """
+    Fetches real GPS data and overwrites the mock positions in vehicles.json.
+    """
+    live_data = transit_client.fetch_live_telemetry()
+    if not live_data:
+        return load_vehicles()["vehicles"]
+
+    payload = load_vehicles()
+    synced_vehicles = []
+
+    for live_v in live_data:
+        for vehicle in payload["vehicles"]:
+            if vehicle["id"] == live_v["id"]:
+                # Overwrite simulated path data with real-world GPS
+                vehicle["lat"] = live_v["lat"]
+                vehicle["lng"] = live_v["lng"]
+                vehicle["speed_kph"] = live_v["speed_kph"]
+                vehicle["status"] = live_v["status"]
+                vehicle["updated_at"] = live_v["last_sync"]
+                
+                # Append to logs for AI route calculation
+                append_log(
+                    vehicle_id=vehicle["id"],
+                    route_id=vehicle["route_id"],
+                    event_type="live_gps_sync",
+                    occupancy_count=vehicle["occupancy_count"],
+                    occupancy_percent=vehicle["occupancy_percent"],
+                    status=vehicle["status"],
+                    wait_minutes=0, # Live sync has 0 wait latency
+                    barangay="GPS Telemetry",
+                    confidence=95 # High confidence for real GPS
+                )
+                synced_vehicles.append(vehicle)
+                break
+
+    save_vehicles(payload)
+    return synced_vehicles

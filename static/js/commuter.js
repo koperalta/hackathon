@@ -1,121 +1,68 @@
-// static/js/commuter.js
+const STATUS_POLL_MS = 1500;
 
-const MONITOR_INTERVAL_MS = 3000; // Poll the edge cameras every 3 seconds
-let activeReroute = false;
+function $(id) {
+  return document.getElementById(id);
+}
 
-/**
- * Continuously polls the edge IoT simulation to monitor the queue vs. capacity.
- */
-async function fetchLiveGateStatus() {
-    try {
-        // Fetching the simulated edge data from the Flask backend
-        const response = await fetch('/api/monitor/status?vehicle_id=JEEP-001');
-        const data = await response.json();
+function setText(id, value) {
+  const el = $(id);
+  if (el) el.textContent = value;
+}
 
-        updateLiveDeparturesBoard(data);
+function setHtml(id, value) {
+  const el = $(id);
+  if (el) el.innerHTML = value;
+}
 
-        // Core Logic: Trigger auto-reroute if occupancy hits "Siksikan" threshold
-        if (data.occupancy.occupancy_percent >= 90 && !activeReroute) {
-            await triggerAutoReroute();
-        } else if (data.occupancy.occupancy_percent < 90 && activeReroute) {
-            // Queue has cleared, reset the UI
-            resetGateUI();
-        }
-    } catch (error) {
-        console.error("Error fetching live gate status:", error);
+function badgeForServiceLevel(level) {
+  const normalized = (level || '').toLowerCase();
+  if (normalized === 'heavy') return 'Service: Heavy';
+  if (normalized === 'moderate') return 'Service: Moderate';
+  return 'Service: Light';
+}
+
+async function refreshPitxStatus() {
+  try {
+    const response = await fetch('/api/pitx-status', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Bad response');
+    const data = await response.json();
+
+    setText('timestampLabel', data.live.timestamp_label || '--');
+    setText('peopleBadge', `People Count: ${data.live.people_count ?? '--'}`);
+    setText('serviceLevelBadge', badgeForServiceLevel(data.prediction?.service_level));
+
+    const wait = data.prediction?.estimated_wait_minutes;
+    setHtml('waitBadge', `
+      <div class="text-[11px] uppercase tracking-[0.22em] text-gray-500">Predictive AI</div>
+      <div class="mt-1 text-lg font-semibold">PITX Estimated Wait: ${wait ?? '--'} mins</div>
+    `);
+
+    const suggestion = data.route_suggestion || {};
+    if (suggestion.is_optimal) {
+      setText('routeSuggestion', suggestion.message || 'Current route is optimal.');
+      setText('timeSavedBadge', '0 mins saved');
+    } else {
+      setText('routeSuggestion', suggestion.message || 'Alternative route suggestion unavailable.');
+      const saved = suggestion.time_saved_minutes ?? '--';
+      setText('timeSavedBadge', `${saved} mins saved`);
     }
+  } catch (err) {
+    // Keep UI stable during transient failures
+    console.error('PITX status update failed:', err);
+  }
 }
 
-/**
- * Updates the standard data labels on the Gate Card.
- */
-function updateLiveDeparturesBoard(data) {
-    const queueLabel = document.getElementById('live-queue-count');
-    const statusLabel = document.getElementById('live-gate-status');
-    
-    if (queueLabel) queueLabel.innerText = `${data.occupancy.count} pax`;
-    if (statusLabel) statusLabel.innerText = data.occupancy.occupancy_level;
-}
-
-/**
- * Executes the visual transition and fetches the intelligent fallback route.
- */
-async function triggerAutoReroute() {
-    activeReroute = true;
-    
-    // 1. Instantly update the primary Gate Card border to Alert Red
-    const gateCard = document.getElementById('primary-gate-card');
-    if (gateCard) {
-        gateCard.classList.remove('status-comfortable');
-        gateCard.classList.add('status-siksikan');
-    }
-
-    // 2. Fetch Alternative Route via the Python AI Backend
-    try {
-        const response = await fetch('/api/commuter/recommendation?priority=least_crowded');
-        const recommendation = await response.json();
-        
-        // 3. Inject the floating recommendation banner
-        showRerouteBanner(recommendation.best_route);
-    } catch (error) {
-        console.error("Error calculating alternative route:", error);
-    }
-}
-
-/**
- * Dynamically constructs and animates a floating banner to suggest the new route.
- */
-function showRerouteBanner(bestRoute) {
-    const boardContainer = document.getElementById('live-departures-board');
-    if (!boardContainer) return;
-    
-    // Ensure we do not stack multiple banners
-    if (document.getElementById('auto-reroute-banner')) return;
-
-    const banner = document.createElement('div');
-    banner.id = 'auto-reroute-banner';
-    banner.className = 'reroute-banner slide-down-animation';
-    
-    // Constructing the HTML natively without reloading the page
-    banner.innerHTML = `
-        <div class="banner-content">
-            <div class="banner-text">
-                <h4 style="color: #FFC107; margin: 0; font-size: 16px;">✨ Magic Auto-Reroute Triggered</h4>
-                <p style="margin: 4px 0 0; font-size: 14px; color: #E0E0E0;">
-                    Gate queue is currently <strong>Siksikan</strong>. 
-                    Switch to <strong>${bestRoute.route_name}</strong> at Gate 6. 
-                    <br>Status: ${bestRoute.occupancy_level} (${bestRoute.occupancy_percent}%) | ETA: ${bestRoute.eta_minutes} min.
-                </p>
-            </div>
-            <button class="accept-reroute-btn" onclick="acceptNewRoute()">Accept Seat</button>
-        </div>
-    `;
-    
-    // Insert the banner above the main board to adhere to the "Never hide the board" UX rule
-    boardContainer.parentNode.insertBefore(banner, boardContainer);
-}
-
-function acceptNewRoute() {
-    // Logic to confirm the new route and update the primary tracking view
-    alert("Route updated successfully. Proceed to the new gate.");
-    resetGateUI();
-}
-
-function resetGateUI() {
-    activeReroute = false;
-    const gateCard = document.getElementById('primary-gate-card');
-    if (gateCard) {
-        gateCard.classList.remove('status-siksikan');
-        gateCard.classList.add('status-comfortable');
-    }
-    
-    const banner = document.getElementById('auto-reroute-banner');
-    if (banner) {
-        banner.remove();
-    }
-}
-
-// Boot up the monitoring loop when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    setInterval(fetchLiveGateStatus, MONITOR_INTERVAL_MS);
+  refreshPitxStatus();
+  setInterval(refreshPitxStatus, STATUS_POLL_MS);
+
+  // If the MJPEG stream stalls, forcing a reload of the <img> can recover it.
+  const video = document.getElementById('pitxVideo');
+  if (video) {
+    video.addEventListener('error', () => {
+      const base = '/video_feed';
+      video.src = `${base}?t=${Date.now()}`;
+    });
+  }
 });
+

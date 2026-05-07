@@ -1,71 +1,50 @@
-/* Base Gate Card Styling */
-.gate-card {
-  background-color: #1A1A1A; /* Charcoal Surface */
+/* --- Prototype & Queue Specifics --- */
+.prototype-banner {
+  background-color: var(--tiger-gold);
+  border-bottom: 2px solid #b8860b;
+}
+
+.max-w-600 {
+  max-width: 600px;
+}
+
+.border-gold {
+  border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.pulse-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: var(--tiger-gold);
+  border-radius: 50%;
+  animation: dot-pulse 1.5s infinite;
+}
+
+@keyframes dot-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 193, 7, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+
+/* Updated Gate Card Layout */
+.terminal-gate-card {
+  background-color: var(--charcoal);
+  border: 1px solid var(--iron);
+  border-left: 6px solid var(--iron);
   border-radius: 8px;
   padding: 16px;
-  margin-bottom: 16px;
-  border-left: 6px solid #333333; /* Default Iron border */
-  transition: all 0.4s ease-in-out;
+  height: 100%;
 }
 
-/* Comfortable Status (Tiger Gold) */
-.status-comfortable {
-  border-left-color: #FFC107;
-  box-shadow: -4px 0px 12px rgba(255, 193, 7, 0.15);
-}
-
-/* Siksikan Status (Alert Red with pulsing animation) */
-.status-siksikan {
-  border-left-color: #FF4444;
-  animation: pulse-red-glow 2s infinite;
-}
-
-@keyframes pulse-red-glow {
-  0% { box-shadow: -4px 0px 12px rgba(255, 68, 68, 0.2); }
-  50% { box-shadow: -6px 0px 18px rgba(255, 68, 68, 0.6); }
-  100% { box-shadow: -4px 0px 12px rgba(255, 68, 68, 0.2); }
-}
-
-/* Non-Intrusive Floating Banner */
-.reroute-banner {
-  background-color: #1A1A1A;
-  border: 1px solid #FFC107;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.banner-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.accept-reroute-btn {
-  background-color: #FFC107; /* Tiger Gold */
-  color: #000000; /* Deep Onyx text for maximum contrast */
-  font-weight: bold;
-  border: none;
+.gate-status-badge {
+  font-family: monospace;
+  font-size: 0.8rem;
+  padding: 4px 8px;
   border-radius: 4px;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: transform 0.2s;
+  font-weight: bold;
 }
 
-.accept-reroute-btn:hover {
-  transform: scale(1.05);
-}
-
-/* Smooth injection animation */
-.slide-down-animation {
-  animation: slideDown 0.5s ease-out;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.bg-danger-dim { background-color: rgba(255, 68, 68, 0.2); color: #FF4444; }
+.bg-warning-dim { background-color: rgba(255, 193, 7, 0.2); color: #FFC107; }
+.bg-success-dim { background-color: rgba(0, 200, 81, 0.2); color: #00C851; }

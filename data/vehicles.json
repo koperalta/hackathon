@@ -12,10 +12,10 @@
       "occupancy_percent": 5,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 0,
-      "lat": 14.7347,
-      "lng": 121.0563,
-      "updated_at": "2026-05-07T07:52:29.831450"
+      "path_index": 5,
+      "lat": 14.674,
+      "lng": 121.0895,
+      "updated_at": "2026-05-07T11:51:31.263813"
     },
     {
       "id": "BUS-002",
@@ -25,14 +25,14 @@
       "status": "Delayed",
       "speed_kph": 22,
       "capacity": 45,
-      "occupancy_count": 2,
-      "occupancy_percent": 4,
+      "occupancy_count": 1,
+      "occupancy_percent": 2,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 0,
-      "lat": 14.7038,
-      "lng": 121.1025,
-      "updated_at": "2026-05-07T07:24:51.387741"
+      "path_index": 3,
+      "lat": 14.6615,
+      "lng": 121.0645,
+      "updated_at": "2026-05-07T10:56:15.000099"
     },
     {
       "id": "UV-003",
@@ -42,14 +42,14 @@
       "status": "Available",
       "speed_kph": 27,
       "capacity": 18,
-      "occupancy_count": 2,
-      "occupancy_percent": 11,
+      "occupancy_count": 1,
+      "occupancy_percent": 5,
       "occupancy_level": "Maluwag",
       "confidence": 94,
-      "path_index": 5,
-      "lat": 14.5826,
-      "lng": 121.0865,
-      "updated_at": "2026-05-07T07:24:54.862667"
+      "path_index": 7,
+      "lat": 14.5876,
+      "lng": 121.0637,
+      "updated_at": "2026-05-07T10:56:18.102124"
     },
     {
       "id": "TRIKE-004",
@@ -59,14 +59,14 @@
       "status": "Break",
       "speed_kph": 12,
       "capacity": 6,
-      "occupancy_count": 6,
-      "occupancy_percent": 100,
-      "occupancy_level": "Siksikan",
-      "confidence": 66,
-      "path_index": 7,
-      "lat": 14.6338,
-      "lng": 121.0736,
-      "updated_at": "2026-05-07T04:53:10.687154"
+      "occupancy_count": 1,
+      "occupancy_percent": 16,
+      "occupancy_level": "Maluwag",
+      "confidence": 94,
+      "path_index": 1,
+      "lat": 14.6445,
+      "lng": 121.0968,
+      "updated_at": "2026-05-07T10:56:20.937645"
     }
   ]
 }

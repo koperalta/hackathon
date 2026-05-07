@@ -1,38 +1,18 @@
-# Agent Persona: Lead Full-Stack Infrastructure Architect
-You are the Lead Developer for "Team L's Not Found" at the Codewarts Hackathon. Your philosophy is "Do Not Reinvent the Wheel." You prioritize using open-source APIs, pre-trained models, and existing datasets to build a functional, terminal-centric IoT transit app in 24 hours.
+# AI & Machine Learning Pipeline
 
-## 1. The Implementation Logic (The Philosophy)
-- **Domain Focus:** We are modeling high-efficiency, Japanese-style subway logistics specifically tailored for major Philippine transport hubs (e.g., PITX). 
-- **The Core Loop (Dual-Metric Tracking):**
-    1. Edge cameras (simulated) mounted above terminal boarding gates count the queue length using YOLOv11.
-    2. The system tracks both the queue length *and* the incoming bus capacity.
-    3. Data is pushed to a centralized Flask backend (`data_store.py`).
-    4. The Commuter app dynamically updates a "Live Departures Board" based on real-time gate crowding.
+This project utilizes three distinct, interconnected AI modules (agents) to process real-world visual data and deliver actionable insights.
 
-## 2. The Open-Source "Wheels" (Tech Stack)
-- **Backend Framework:** `Flask` (For robust API routing and serving asynchronous video feeds).
-- **Frontend Stack:** Native `HTML/JS/CSS` (Using asynchronous fetches to update the DOM without reloading).
-- **Computer Vision:** `ultralytics` (Using pre-trained YOLOv11n weights for queue density).
-- **Video Streaming:** `opencv-python` (To serve multi-part MJPEG streams).
-- **Data Handling:** Local JSON/CSV simulation managed by `pandas` acting as a mock cloud database.
+## 1. Computer Vision Agent (`people_counter.py` & `yolo11n.pt`)
+* **Core Tech:** Ultralytics YOLOv11 Nano model.
+* **Function:** Ingests the live video stream (`data/pitx_rush_hour.mp4`) and processes it frame-by-frame using OpenCV. 
+* **Execution:** Detects the `person` class, draws bounding boxes around commuters, and maintains a highly accurate, running count of people in the terminal queue. It simultaneously streams this visual output to the frontend via a multipart/x-mixed-replace feed so users can verify the data.
 
-## 3. Component Architecture
+## 2. Predictive Forecasting Agent (`forecasting_ai.py`)
+* **Core Tech:** Custom Data Science Logic.
+* **Function:** Translates raw computer vision counts into actionable time metrics.
+* **Execution:** Calculates the estimated wait time dynamically based on the live queue density (from the CV Agent), average bus capacity, and historical departure intervals. It serves this metric to the frontend via the `/api/pitx-status` endpoint.
 
-### A. The "Edge" Module (Gate IoT Simulation)
-- **File:** `people_counter.py`
-- **Function:** `get_terminal_queue_density(gate_id)`
-- **Logic:** Capture frame -> YOLOv11 detect 'person' in line -> Return queue count and "Crowd Status" (Comfortable, Crowded, Siksikan).
-
-### B. The "Intelligence" Module (SDG & Data Science)
-- **File:** `route_ai.py`
-- **Function:** `calculate_opportunity_access_score()`
-- **Logic:** Cross-reference commuter wait times with available fleet capacity to generate dashboard insights for LGUs and terminal management.
-
-### C. The "Commuter" Module (UI)
-- **File:** `templates/commuter.html` & `static/js/commuter.js`
-- **Logic:** A Live Departures Board that flashes `Alert Red` if a gate's queue exceeds 90% of the incoming bus capacity, triggering an automatic prompt to seek alternative transit.
-
-## 4. Coding Instructions for AI Agents
-- **Strict Architecture:** DO NOT use Streamlit. We are strictly using Python Flask with HTML templates.
-- **Simulated Latency:** Incorporate minor delays in the backend mock data to simulate real-world IoT transmission.
-- **Modularity:** Ensure the CV logic (`people_counter.py`), routing intelligence (`route_ai.py`), and state management (`data_store.py`) remain completely decoupled.
+## 3. Dynamic Routing Agent (`route_ai.py`)
+* **Core Tech:** Rule-based/Heuristic AI Routing.
+* **Function:** Directly addresses opportunity inequality by offering commuters a way to bypass congestion.
+* **Execution:** Continuously monitors the output of the Forecasting Agent. If the wait time at PITX exceeds a predefined critical threshold, the agent calculates a faster alternative route using secondary transit options (e.g., EDSA Carousel) and pushes this suggestion to the UI, complete with estimated time saved.
